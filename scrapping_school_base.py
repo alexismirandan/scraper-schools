@@ -3,7 +3,7 @@ import abc
 import xlsxwriter
 
 
-class ScrappingSchoolsBase(metaclass=abc.ABCMeta):
+class ScrapingSchoolsBase(metaclass=abc.ABCMeta):
     """ Base scrapping for schools """
 
     def __init__(self):
@@ -46,6 +46,10 @@ class ScrappingSchoolsBase(metaclass=abc.ABCMeta):
     def name_file(self):
         pass
 
+    @abc.abstractproperty
+    def list_first_row_of_file(self):
+        pass
+
     @abc.abstractmethod
     def get_schools(self):
         """ Return list of HtmlElement """
@@ -61,10 +65,6 @@ class ScrappingSchoolsBase(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def get_regions(self):
-        pass
-
-    @abc.abstractmethod
     def get_list_data_school(self, school, region_id, region_name, commune_id, commune_name):
         """
         Return list of data of the school:
@@ -72,17 +72,33 @@ class ScrappingSchoolsBase(metaclass=abc.ABCMeta):
         """
         pass
 
-    @abc.abstractmethod
-    def get_list_first_row_of_file(self):
-        pass
-
     def get_file_format_first_row(self):
         return self.workbook.add_format({'bold': True, 'font_size': 12})
 
     def build_file_first_row(self):
-        for col, value in enumerate(self.get_list_first_row_of_file()):
+        for col, value in enumerate(self.list_first_row_of_file):
             self.worksheet.write(0, col, value, self.get_file_format_first_row())
             self.worksheet.set_column(col, col, 10)
 
     def close_file(self):
         self.workbook.close()
+
+    def get_regions(self):
+        """ Return regions """
+        return {
+            1: 'tarapacá',
+            2: 'antofagasta',
+            3: 'atacama',
+            4: 'coquimbo',
+            5: 'valparaíso',
+            6: 'libertador bernardo ohiggins',
+            7: 'maule',
+            8: 'biobío',
+            9: 'la araucanía',
+            10: 'los lagos',
+            11: 'aysén del general carlos ibañez del campo',
+            12: 'magallanes y la antártica chilena',
+            13: 'metropolitana de santiago',
+            14: 'los ríos',
+            15: 'arica y parinacota'
+        }

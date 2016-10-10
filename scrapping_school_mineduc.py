@@ -1,17 +1,21 @@
 # -*- coding: utf-8 -*-
 from lxml import html
 import requests
-from scrapping_school_base import ScrappingSchoolsBase
+from scrapping_school_base import ScrapingSchoolsBase
 
 
-class ScrappingSchoolsMineduc(ScrappingSchoolsBase):
+class ScrapingSchoolsMineduc(ScrapingSchoolsBase):
+    """ Scrapping class of schools from mineduc.cl"""
+
     name_file = 'mineduc2'
     base_url = 'http://www.mime.mineduc.cl/mime-web/mvc/mime/busqueda_avanzada'
+    list_first_row_of_file = [
+        'region_id', 'region', 'commune_id', 'commune',
+        'name_school', 'mensualidad', 'dependencia'
+    ]
 
-    def get_list_first_row_of_file(self):
-        return ['region_id', 'region', 'commune_id', 'commune', 'name_school', 'mensualidad', 'dependencia']
-
-    def get_schools(self, link, commune_id, num_region):
+    def get_schools(self, link, commune_id, region_id):
+        """ Return schools of mineduc for an commune_id and region_id """
         data = {
             'com': commune_id,
             'comuna': commune_id,
@@ -26,8 +30,8 @@ class ScrappingSchoolsMineduc(ScrappingSchoolsBase):
             'nmed': 0,
             'npar': 0,
             'rbd1': None,
-            'reg': num_region,
-            'region': num_region,
+            'reg': region_id,
+            'region': region_id,
             'sec': 0,
             'sectorEco': 0,
             'sep': 0,
@@ -40,6 +44,7 @@ class ScrappingSchoolsMineduc(ScrappingSchoolsBase):
         return schools
 
     def get_list_data_school(self, school, region_id, region_name, commune_id, commune_name):
+        """ Return data of school as list of mineduc """
         row_school = school.cssselect("td")
         name_school = row_school[1].cssselect("a")[0].text
         monthly_payment = row_school[2].text
@@ -55,6 +60,7 @@ class ScrappingSchoolsMineduc(ScrappingSchoolsBase):
         ]
 
     def get_communes_by_regions(self):
+        """ Return communes by regions of mineduc """
         return {
             1: [
                 (1101, 'IQUIQUE'),
@@ -64,29 +70,10 @@ class ScrappingSchoolsMineduc(ScrappingSchoolsBase):
                 (1403, 'COLCHANE'),
                 (1404, 'HUARA'),
                 (1405, 'PICA'),
-            ], 
-        }
-
-    def get_regions(self):
-        return {
-            1: 'tarapacá',
-            2: 'antofagasta',
-            3: 'atacama',
-            4: 'coquimbo',
-            5: 'valparaíso',
-            6: 'libertador bernardo ohiggins',
-            7: 'maule',
-            8: 'biobío',
-            9: 'la araucanía',
-            10: 'los lagos',
-            11: 'aysén del general carlos ibañez del campo',
-            12: 'magallanes y de la antártica chilena',
-            13: 'metropolitana de santiago',
-            14: 'los ríos',
-            15: 'arica y parinacota'
+            ],
         }
 
 
 if __name__ == '__main__':
-    s = ScrappingSchoolsMineduc()
-    s.run()
+    scraping_mineduc = ScrapingSchoolsMineduc()
+    scraping_mineduc.run()
