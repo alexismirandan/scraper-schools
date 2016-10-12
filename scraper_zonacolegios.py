@@ -10,7 +10,7 @@ def get_region_number(region_href):
     return int(text_without_html[pos_last+1::])
 
 
-class ScrapingSchoolZonacolegios(AbstractWebScrapingSchool):
+class ScraperZonacolegios(AbstractWebScrapingSchool):
     """ Scrapping class of schools from zonacolegios.ipower.com """
 
     name_file = 'zonacolegios'
@@ -79,5 +79,5 @@ class ScrapingSchoolZonacolegios(AbstractWebScrapingSchool):
 
 
 if __name__ == '__main__':
-    scraping_zonacolegios = ScrapingSchoolZonacolegios()
-    scraping_zonacolegios.run()
+    scraper_zonacolegios = ScraperZonacolegios()
+    scraper_zonacolegios.run()

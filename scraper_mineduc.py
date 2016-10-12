@@ -4,7 +4,7 @@ import requests
 from base import AbstractWebScrapingSchool
 
 
-class ScrapingSchoolMineduc(AbstractWebScrapingSchool):
+class ScraperMineduc(AbstractWebScrapingSchool):
     """ Scrapping class of schools from mineduc.cl"""
 
     name_file = 'mineduc2'
@@ -75,5 +75,5 @@ class ScrapingSchoolMineduc(AbstractWebScrapingSchool):
 
 
 if __name__ == '__main__':
-    scraping_mineduc = ScrapingSchoolMineduc()
-    scraping_mineduc.run()
+    scraper_mineduc = ScraperMineduc()
+    scraper_mineduc.run()
