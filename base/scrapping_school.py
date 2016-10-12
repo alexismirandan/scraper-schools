@@ -3,7 +3,7 @@ import abc
 import xlsxwriter
 
 
-class ScrapingSchoolBase(metaclass=abc.ABCMeta):
+class AbstractWebScrapingSchool(metaclass=abc.ABCMeta):
     """ Base scrapping for schools """
 
     def __init__(self):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from lxml import html
 import requests
-from scrapping_school_base import ScrapingSchoolBase
+from base import AbstractWebScrapingSchool
 
 
 def get_region_number(region_href):
@@ -10,7 +10,7 @@ def get_region_number(region_href):
     return int(text_without_html[pos_last+1::])
 
 
-class ScrapingSchoolZonacolegios(ScrapingSchoolBase):
+class ScrapingSchoolZonacolegios(AbstractWebScrapingSchool):
     """ Scrapping class of schools from zonacolegios.ipower.com """
 
     name_file = 'zonacolegios'
@@ -20,8 +20,8 @@ class ScrapingSchoolZonacolegios(ScrapingSchoolBase):
         'name_school', 'mensualidad', 'dependencia'
     ]
 
-    def get_schools(self, _, commune_id, region_id):
-        """ Return schools of mineduc for an commune_id and region_id """
+    def get_schools(self, link, commune_id, region_id):
+        """ Return schools of zonacolegios for an commune_id and region_id """
         print("get_schools: commune_id={0} region_id={1}".format(commune_id, region_id))
         url = self.base_url + commune_id
         requests_school = requests.get(url)
@@ -35,7 +35,7 @@ class ScrapingSchoolZonacolegios(ScrapingSchoolBase):
         return []
 
     def get_list_data_school(self, school, region_id, region_name, commune_id, commune_name):
-        """ Return data of school as list of mineduc """
+        """ Return data of school as list of zonacolegios """
         name_school = school.text
         commune_key = commune_id.replace('.html', '').replace('comunas/colegios-de-', '')
         print(name_school)
@@ -50,24 +50,32 @@ class ScrapingSchoolZonacolegios(ScrapingSchoolBase):
         ]
 
     def get_communes_by_regions(self):
-        """ Return communes by regions of mineduc """
+        """ Return communes by regions of zonacolegios """
         page_regions = requests.get(self.base_url + 'colegios-zona.html')
         tree_regions = html.fromstring(page_regions.content)
         regions = tree_regions.cssselect('table td tr a')
-        dict_regions = {}
-        for region in regions:
-            region_href = region.get('href', None)
-            region_number = get_region_number(region_href)
-            # get communes
-            page_communes = requests.get(self.base_url + region_href)
-            tree_communes = html.fromstring(page_communes.content)
-            communes = tree_communes.cssselect('table td tr a')
-            list_communes = [
-                (commune.get('href', None), commune.text)
-                for commune in communes
-            ]
-            dict_regions[region_number] = list_communes
-        return dict_regions
+        dict_regions = map(
+            lambda region: (
+                get_region_number(region.get('href', None)),
+                self.get_list_communes_by_region(region)
+            ),
+            regions
+        )
+        return dict(dict_regions)
+
+    def get_list_communes_by_region(self, region):
+        """ Return list of communes by region """
+        region_href = region.get('href', None)
+        region_number = get_region_number(region_href)
+        # get communes
+        page_communes = requests.get(self.base_url + region_href)
+        tree_communes = html.fromstring(page_communes.content)
+        communes = tree_communes.cssselect('table td tr a')
+        list_communes = [
+            (commune.get('href', None), commune.text)
+            for commune in communes
+        ]
+        return list_communes
 
 
 if __name__ == '__main__':
