@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from lxml import html
 import requests
-from scrapping_school_base import ScrapingSchoolsBase
+from scrapping_school_base import ScrapingSchoolBase
 
 
-class ScrapingSchoolsMineduc(ScrapingSchoolsBase):
+class ScrapingSchoolMineduc(ScrapingSchoolBase):
     """ Scrapping class of schools from mineduc.cl"""
 
     name_file = 'mineduc2'
@@ -75,5 +75,5 @@ class ScrapingSchoolsMineduc(ScrapingSchoolsBase):
 
 
 if __name__ == '__main__':
-    scraping_mineduc = ScrapingSchoolsMineduc()
+    scraping_mineduc = ScrapingSchoolMineduc()
     scraping_mineduc.run()

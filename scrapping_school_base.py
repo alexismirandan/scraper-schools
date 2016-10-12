@@ -3,7 +3,7 @@ import abc
 import xlsxwriter
 
 
-class ScrapingSchoolsBase(metaclass=abc.ABCMeta):
+class ScrapingSchoolBase(metaclass=abc.ABCMeta):
     """ Base scrapping for schools """
 
     def __init__(self):
@@ -23,7 +23,7 @@ class ScrapingSchoolsBase(metaclass=abc.ABCMeta):
                 schools = self.get_schools(
                     link=self.base_url,
                     commune_id=commune_id,
-                    num_region=region_id
+                    region_id=region_id
                 )
                 for school in schools:
                     list_data_school = self.get_list_data_school(
