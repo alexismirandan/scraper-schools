@@ -4,16 +4,17 @@ import xlsxwriter
 
 
 class AbstractWebScrapingSchool(metaclass=abc.ABCMeta):
-    """ Base scrapping for schools """
+    """ Base Webscraping for schools """
 
     def __init__(self):
-        """ Initialize ScrappingSchools """
+        """ Initialize WebScrapingSchools """
         self.encoding = None
         self.requests_obj = None
         self.workbook = xlsxwriter.Workbook('{0}.xlsx'.format(self.name_file))
         self.worksheet = self.workbook.add_worksheet('Colegios')
 
     def run(self):
+        """ Run scraper """
         self.build_file_first_row()
         communes_by_region = self.get_communes_by_regions()
         dict_regions = self.get_regions()
@@ -40,19 +41,22 @@ class AbstractWebScrapingSchool(metaclass=abc.ABCMeta):
 
     @abc.abstractproperty
     def base_url(self):
+        """ Base url of the page """
         pass
 
     @abc.abstractproperty
     def name_file(self):
+        """ Name file results scraping """
         pass
 
     @abc.abstractproperty
     def list_first_row_of_file(self):
+        """ Names of first row of the file"""
         pass
 
     @abc.abstractmethod
     def get_schools(self):
-        """ Return list of HtmlElement """
+        """ Return list of HtmlElement. Contains school data """
         pass
 
     @abc.abstractmethod
@@ -67,20 +71,23 @@ class AbstractWebScrapingSchool(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def get_list_data_school(self, school, region_id, region_name, commune_id, commune_name):
         """
-        Return list of data of the school:
+        Return data of an school:
             [region_id, name_region, commune_id, commune_name, name_school, monthly_payment, dependence]
         """
         pass
 
     def get_file_format_first_row(self):
+        """ Return format for xlsx file"""
         return self.workbook.add_format({'bold': True, 'font_size': 12})
 
     def build_file_first_row(self):
+        """ Build firs row of the xslx file"""
         for col, value in enumerate(self.list_first_row_of_file):
             self.worksheet.write(0, col, value, self.get_file_format_first_row())
             self.worksheet.set_column(col, col, 10)
 
     def close_file(self):
+        """ Close xlsx file """
         self.workbook.close()
 
     def get_regions(self):
